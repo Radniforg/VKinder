@@ -9,7 +9,7 @@ import json
 
 
 if __name__ == '__main__':
-    TOKEN = 'fe2b853bb40a4e7eb972ff331052d1b3f8cba7e3cf1127829e75e76394309f05f1288723f01ae9a623799'
+    TOKEN = '3641a1ff8ec80f2277ae1a29b0e7cc18054e6f07c367e621f2eee4c59dc8de6cf9afd5291a638752c6ca2'
     APP_ID =  7527992
     user = 6293784
     token_confirmation(APP_ID, TOKEN)

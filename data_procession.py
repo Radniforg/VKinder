@@ -26,4 +26,4 @@ def profile_pictures(user_id, token):
                 break
         raw.append(temp_dictionary)
     raw.sort(reverse = True, key = lambda x: (x['like'], x['date']))
-    return raw[:3]
+    return raw[:5]
