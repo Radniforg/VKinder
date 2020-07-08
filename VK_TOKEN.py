@@ -24,8 +24,11 @@ def token_confirmation(app_id, TOKEN = ''):
                 'v': 5.52
             }
             print('?'.join((OAUTH_URL, urlencode(OAUTH_PARAMS))))
-            token = input('Пожалуйста, пройдите по ссылке и'
-                          ' вставьте корректный TOKEN:\n')
+            full_url = input('Пожалуйста, пройдите по ссылке и'
+                          ' скопируйте полностью полученный URL без https:// :\n')
+            half_token = full_url.split('=')[1]
+            token = half_token.split('&')[0]
+            print(f'Token - {token}')
         except KeyError:
             check_bool = True
     return token
@@ -47,6 +50,7 @@ def user_confirmed(user1, TOKEN):
             user_id = response_id.json()['response'][0]['id']
             username_confirmation = True
         except KeyError:
+            print(response_id.json())
             correct_input = False
             while not correct_input:
                 function_suspension = input('Некорректное имя пользователя. '

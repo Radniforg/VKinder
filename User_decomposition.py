@@ -2,6 +2,12 @@ import requests
 import json
 import re
 
+search_list_keys = ['activities', 'books', 'city', 'faculty_name', 'games', 'home_town', 'interests', 'movies',
+                    'music', 'occupation', 'religion', 'religion_2', 'tv']
+small_list_keys = ['books', 'interests', 'movies', 'music', 'tv', 'games']
+basic_list_keys = ['activities', 'city', 'faculty_name', 'home_town', 'religion', 'occupation', 'life_main',
+                   'political', 'people_main', 'religion_2']
+
 def user_interests(user_id, token):
     elements = {}
     response_id = requests.get(
@@ -66,8 +72,9 @@ def user_element_weight():
         'relation_ban': 0,
         'religion': 0,
         'religion_2': 0,
-        'smoking': 0,
-        'tv': 0
+        'tv': 0,
+        'alcohol': 0,
+        'smoking': 0
     }
     user_matrix = {}
     correct_input = False
@@ -79,7 +86,7 @@ def user_element_weight():
         elif user_love_interest.lower() == 'y':
             standart_matrix['relation_ban'] = 1
             while not correct_input:
-                user_preferences = input('Пожалуйста, укажите желаемый пол партера: М/Ж/Л(любой):')
+                user_preferences = input('Пожалуйста, укажите желаемый пол партера: М/Ж/Л(любой):\n')
                 if user_preferences.lower() == 'м':
                     standart_matrix['sex_preference'] = 2
                     correct_input = True
@@ -119,5 +126,57 @@ def user_element_weight():
         else:
             print('Некорректная команда. Повторите ввод')
     return user_matrix
+
+
+def user_comparison(user_elements, partner_elements, standart_matrix):
+    #Проверяет совместимость по отношениям
+    if standart_matrix['relation_ban'] == 1:
+        if partner_elements['relation'] in [2, 3, 4, 7, 8]:
+            return None
+    #Проверяет совместимость по полу
+    if standart_matrix['sex_preference'] > 0:
+        if standart_matrix['sex_preference'] != partner_elements['sex']:
+            return None
+    #Проверяет совместимость по отношению к курению
+    if user_elements['smoking'] not in [0, 3, 4] and standart_matrix['smoking'] > 0:
+        if abs(user_elements['smoking'] - partner_elements['smoking']) > 2 and partner_elements['smoking'] != 4:
+            return None
+    #Проверяет совместимость по отношению к алкоголю
+    if user_elements['alcohol'] not in [0, 3, 4] and standart_matrix['alcohol'] > 0:
+        if abs(user_elements['alcohol'] - partner_elements['alcohol']) > 2 and partner_elements['alcohol'] != 4:
+            return None
+    #Исключает друзей
+    if partner_elements['is_friend'] == 1:
+        return None
+    #Сырые данные соотношения с текущим партнером
+    raw_data_weight = {}
+    #Данные соотношения возрастов
+    try:
+        raw_data_weight['bdate'] = abs(int(user_elements['bdate'].split('.')[2])
+                                       - int(partner_elements['bdate'].split('.')[2]))
+    except IndexError:
+        raw_data_weight['bdate'] = 100
+    #данные по общим друзьям и количеству подписчиков
+    raw_data_weight['common_count'] = partner_elements['common_count']
+    raw_data_weight['follower_count'] = partner_elements['follower_count']
+    #данные, сравнивающие интересы, книги и тд
+    for key in small_list_keys:
+        raw_data_weight[key] = 0
+        if type(partner_elements[key]) is list:
+            if type(user_elements) is list:
+                for partner_interest in partner_elements[key]:
+                    if partner_interest in user_elements[key]:
+                        raw_data_weight[key] += 1
+    #Сравнение простых параметров (город, место рождения, религия и т.д.
+    for key in basic_list_keys:
+        raw_data_weight[key] = 0
+        if user_elements[key]:
+            if user_elements[key] == partner_elements[key]:
+                raw_data_weight = 1
+    return raw_data_weight
+
+
+
+
 
 
