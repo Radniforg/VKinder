@@ -9,10 +9,10 @@ import json
 
 
 if __name__ == '__main__':
-    previous_token = 'd8b724accc7c77fe5c3dc4018bf210af5304d1f70ad733c8cdf7e037c9a11eb2e318bbf3fe17588a91b00'
+    previous_token = ''
     APP_ID = 7527992
     current_token = token_confirmation(APP_ID, previous_token)
-    user = user_confirmed('grofindar', current_token)
+    user = user_confirmed('', current_token)
     user_information = ud.user_interests(user, current_token)
     standart = ud.user_element_weight()
     search_queue = {'city': user_information['city'],
