@@ -17,7 +17,12 @@ def profile_pictures(user_id, token):
             'v': 5.99
         }
     )
-    photo_data = response_id.json()['response']['items']
+    print(response_id.json())
+    time.sleep(1)
+    try:
+        photo_data = response_id.json()['response']['items']
+    except KeyError:
+        return None
     raw = []
     for profile_picture in photo_data:
         temp_dictionary = {'like': profile_picture['likes']['count'], 'date': profile_picture['date']}
@@ -64,3 +69,20 @@ def user_search(search_queue, token, giant_id_list):
                     giant_id_list.append(user['id'])
         age_queue += 1
     return giant_id_list
+
+def partner_photo(potential_partner_list, token, ban_list):
+    count = 1
+    result = []
+    new_ban_list = []
+    for partner_id in potential_partner_list:
+        if count <= 10:
+            temp_dict = {}
+            if partner_id[0] not in ban_list:
+                temp_dict['id'] = partner_id[0]
+                temp_dict['photo'] = profile_pictures(partner_id[0], token)
+                new_ban_list.append(partner_id[0])
+                count += 1
+                print(count)
+            if temp_dict['photo'] is not None:
+                result.append(temp_dict)
+    return result
