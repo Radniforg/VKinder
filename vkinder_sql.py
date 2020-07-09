@@ -1,6 +1,5 @@
 import psycopg2 as pg
 
-#
 
 def partner_add_block(conn, id_user, block_string):
     cur = conn.cursor()
@@ -8,7 +7,8 @@ def partner_add_block(conn, id_user, block_string):
     new_user = 1
     for user in cur.fetchall():
         if user[0] == id_user:
-            user[1] = user[1] + ', ' + block_string
+            new_string = f'{user[1]}, {block_string}'
+            cur.execute("UPDATE block SET blocked_list = %s WHERE user_id = %s", (new_string, id_user))
             new_user = 0
             break
     if new_user == 1:
@@ -34,7 +34,7 @@ def sql_result(conn, id_user, result):
                         id SERIAL PRIMARY KEY,
                         user_id VARCHAR(12),
                         results TEXT);''')
-    cur.execute("INSERT INTO block (user_id, blocked_list) VALUES (%s, %s)", (id_user, result))
+    cur.execute("INSERT INTO vinder_results (user_id, results) VALUES (%s, %s)", (id_user, result))
 
 def restart(conn):
     cur = conn.cursor()

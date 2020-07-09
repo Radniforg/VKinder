@@ -122,14 +122,11 @@ def user_element_weight():
         if user_response.lower() == 'н':
             for key in standart_matrix.keys():
                 user_matrix[key] = standart_matrix[key]
-            print(user_matrix)
             correct_input = True
         elif user_response.lower() == 'д':
             for key in standart_matrix.keys():
                 if key == 'relation_ban' or key == 'sex_preference':
                     user_matrix[key] = standart_matrix[key]
-                    print(user_matrix['age_difference'])
-                    print(type(user_matrix['age_difference']))
                 else:
                     inter_correct_input = False
                     while not inter_correct_input:
@@ -143,20 +140,10 @@ def user_element_weight():
             correct_input = True
         else:
             print('Некорректная команда. Повторите ввод')
-    print(user_matrix['age_difference'])
-    print(type(user_matrix['age_difference']))
     return user_matrix
 
 
 def user_comparison(user_elements, partner_elements, standart_matrix):
-    # #Проверяет совместимость по отношениям
-    # if standart_matrix['relation_ban'] == 1:
-    #     if partner_elements['relation'] in [2, 3, 4, 7, 8]:
-    #         return None
-    # #Проверяет совместимость по полу
-    # if standart_matrix['sex_preference'] > 0:
-    #     if standart_matrix['sex_preference'] != partner_elements['sex']:
-    #         return None
     #Проверяет совместимость по отношению к курению
     if user_elements['smoking'] not in [0, 3, 4, None] and standart_matrix['smoking'] > 0:
         if abs(user_elements['smoking'] - partner_elements['smoking']) > 2 and partner_elements['smoking'] != 4:
@@ -171,9 +158,6 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
     try:
         user_bdate = int(user_elements['bdate'].split('.')[2])
         partner_bdate = int(partner_elements['bdate'].split('.')[2])
-        calc = abs(user_bdate - partner_bdate) + 0.1
-        # print(f"calc: {type(calc)}"
-        #       f" - {calc}")
         raw_data_weight['bdate'] = (int(standart_matrix['age_difference'])-abs(user_bdate - partner_bdate)
                                     + 0.1)*standart_matrix['age_difference']
     except IndexError:
@@ -189,15 +173,12 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
             for partner_interest in partner_elements[key]:
                 if partner_interest in user_elements[key]:
                     raw_data_weight[key] += standart_matrix[key]
-                if key == 'books':
-                    print(f'{partner_interest} - {user_elements[key]}')
     #Сравнение простых параметров (город, место рождения, религия и т.д.
     for key in basic_list_keys:
         raw_data_weight[key] = 0
         if user_elements[key] and key != 'common_count':
             if user_elements.get(key) == partner_elements.get(key) and user_elements.get(key):
                 raw_data_weight[key] = standart_matrix[key]
-    print(raw_data_weight)
     return raw_data_weight
 
 

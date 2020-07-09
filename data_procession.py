@@ -4,6 +4,8 @@ import time
 
 search_list_keys = ['activities', 'books', 'city', 'faculty_name', 'games', 'home_town', 'interests', 'movies',
                     'music', 'occupation', 'religion', 'religion_2', 'tv']
+relation_id = {'1': 'не женат/не замужем', '2': 'есть друг/подруга', '3': 'помолвлен(а)', '4': 'женат/замужем',
+            '5': 'всё сложно', '6': 'в активном поиске', '7': 'влюблен(а)', '8': 'в гражданском браке'}
 
 def profile_pictures(user_id, token):
     response_id = requests.get(
@@ -17,7 +19,7 @@ def profile_pictures(user_id, token):
             'v': 5.99
         }
     )
-    print(response_id.json())
+    print(f'Обрабатывается профиль пользователя id{user_id}')
     time.sleep(1)
     try:
         photo_data = response_id.json()['response']['items']
@@ -52,7 +54,7 @@ def user_search(search_queue, token, giant_id_list):
         else:
             relation_list = [1, 5, 6]
         for relation in relation_list:
-            print(f'{age_queue} - {relation}')
+            print(f'Год рождения: {age_queue}; Статус - {relation_id[str(relation)]}')
             response_id = requests.get(
                 'https://api.vk.com/method/users.search',
                 params={
@@ -69,7 +71,6 @@ def user_search(search_queue, token, giant_id_list):
             )
 
             search_data = response_id.json()['response']['items']
-            print(search_data)
             time.sleep(1)
             for user in search_data:
                 try:
@@ -87,8 +88,7 @@ def partner_photo(potential_partner_list, token):
             temp_dict = {}
             temp_dict['id'] = partner_id[0]
             temp_dict['photo'] = profile_pictures(partner_id[0], token)
-            count += 1
-            print(count)
             if temp_dict['photo'] is not None:
+                count += 1
                 result.append(temp_dict)
     return result
