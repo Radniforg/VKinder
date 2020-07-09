@@ -1,8 +1,9 @@
 import requests
 from urllib.parse import urlencode
 
-def token_confirmation(app_id, TOKEN = ''):
-    #Проверка работоспособности токена
+
+def token_confirmation(app_id, TOKEN=''):
+    # Проверка работоспособности токена
     token = TOKEN
     check_bool = False
     while not check_bool:
@@ -25,7 +26,8 @@ def token_confirmation(app_id, TOKEN = ''):
             }
             print('?'.join((OAUTH_URL, urlencode(OAUTH_PARAMS))))
             full_url = input('Пожалуйста, пройдите по ссылке и'
-                          ' скопируйте полностью полученный URL без https:// :\n')
+                             ' скопируйте полностью полученный URL'
+                             ' без https:// :\n')
             half_token = full_url.split('=')[1]
             token = half_token.split('&')[0]
             print(f'Token - {token}')
