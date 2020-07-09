@@ -71,13 +71,13 @@ def user_element_weight():
         'age_difference': 2,
         'sex_preference': 0,
         'activities': 1,
-        'books': 10,
-        'city': 1,
+        'books': 9,
+        'city': 0,
         'common_count': 2,
         'faculty_name': 1,
-        'games': 10,
+        'games': 9,
         'home_town': 2,
-        'interests': 10,
+        'interests': 9,
         'life_main': 6,
         'movies': 0,
         'music': 0,
@@ -173,7 +173,7 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
     try:
         user_bdate = int(user_elements['bdate'].split('.')[2])
         partner_bdate = int(partner_elements['bdate'].split('.')[2])
-        raw_data_weight['bdate'] = (int(standart_matrix['age_difference']) -
+        raw_data_weight['bdate'] = (int(standart_matrix['age_limit']) -
                                     abs(user_bdate - partner_bdate) + 0.1)\
                                    * standart_matrix['age_difference']
     except IndexError:
@@ -182,7 +182,7 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
         return None
     # данные по общим друзьям
     raw_data_weight['common_count'] = partner_elements['common_count'] / \
-                                      standart_matrix['common_count']
+                                      (10 - standart_matrix['common_count'])
     # данные, сравнивающие интересы, книги и тд
     for key in small_list_keys:
         raw_data_weight[key] = 0

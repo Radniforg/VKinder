@@ -11,9 +11,8 @@ import json
 if __name__ == '__main__':
     previous_token = 'd8b724accc7c77fe5c3dc4018bf210af5304d1f70ad733c8cdf7e037c9a11eb2e318bbf3fe17588a91b00'
     APP_ID = 7527992
-    user = 'grofindar'
     current_token = token_confirmation(APP_ID, previous_token)
-    user_confirmed(user, current_token)
+    user = user_confirmed('grofindar', current_token)
     user_information = ud.user_interests(user, current_token)
     standart = ud.user_element_weight()
     search_queue = {'city': user_information['city'],
@@ -27,7 +26,6 @@ if __name__ == '__main__':
     progress = 0
     with pg.connect(database='vkinder', user='vinder',
                     password='vinder') as conn:
-        # print(vs.block_check(conn, user))
         ban_list = vs.block_check(conn, user).split(', ')
         for partner_id in giant_id_list:
             progress += 1
@@ -46,7 +44,6 @@ if __name__ == '__main__':
                       f' из {len(giant_id_list)} обработано')
         sorted_partner_list = sorted(potential_partner_list.items(),
                                      key=lambda x: x[1], reverse=True)
-        pprint(sorted_partner_list)
         new_ban_list = ''
         for person in sorted_partner_list[:10]:
             new_ban_list = new_ban_list + ', ' + str(person[0])
