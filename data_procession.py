@@ -94,6 +94,7 @@ def partner_photo(potential_partner_list, token):
             temp_dict = {}
             temp_dict['id'] = partner_id[0]
             temp_dict['photo'] = profile_pictures(partner_id[0], token)
+            temp_dict['url'] = f'https://vk.com/id{partner_id[0]}'
             if temp_dict['photo'] is not None:
                 count += 1
                 result.append(temp_dict)
