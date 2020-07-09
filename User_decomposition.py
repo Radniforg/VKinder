@@ -62,25 +62,25 @@ def user_interests(user_id, token):
 def user_element_weight():
     #rus = {} - словарь для русификации параметров поиска (для пользовательского ввода)
     standart_matrix = {
-        'age_difference': 0,
+        'age_difference': 2,
         'sex_preference': 0,
-        'activities': 0,
-        'books': 0,
-        'city': 0,
-        'common_count': 0,
-        'faculty_name': 0,
-        'games': 0,
-        'home_town': 0,
-        'interests': 0,
-        'life_main': 0,
+        'activities': 1,
+        'books': 10,
+        'city': 1,
+        'common_count': 2,
+        'faculty_name': 1,
+        'games': 10,
+        'home_town': 2,
+        'interests': 10,
+        'life_main': 6,
         'movies': 0,
         'music': 0,
-        'occupation': 0,
-        'people_main': 0,
-        'political': 0,
+        'occupation': 1,
+        'people_main': 8,
+        'political': 2,
         'relation_ban': 0,
-        'religion': 0,
-        'tv': 0,
+        'religion': 3,
+        'tv': 8,
         'alcohol': 0,
         'smoking': 0
     }
@@ -120,12 +120,16 @@ def user_element_weight():
         user_response = input('Если хотите самостоятельно настроить важность параметров партнера, нажмите Д.'
                               'Для продолжения со стандартными параметрами нажмите Н\n')
         if user_response.lower() == 'н':
-            user_matrix = standart_matrix
+            for key in standart_matrix.keys():
+                user_matrix[key] = standart_matrix[key]
+            print(user_matrix)
             correct_input = True
         elif user_response.lower() == 'д':
             for key in standart_matrix.keys():
                 if key == 'relation_ban' or key == 'sex_preference':
                     user_matrix[key] = standart_matrix[key]
+                    print(user_matrix['age_difference'])
+                    print(type(user_matrix['age_difference']))
                 else:
                     inter_correct_input = False
                     while not inter_correct_input:
@@ -139,6 +143,8 @@ def user_element_weight():
             correct_input = True
         else:
             print('Некорректная команда. Повторите ввод')
+    print(user_matrix['age_difference'])
+    print(type(user_matrix['age_difference']))
     return user_matrix
 
 
@@ -163,10 +169,15 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
     raw_data_weight = {}
     #Данные соотношения возрастов
     try:
-        raw_data_weight['bdate'] = abs(int(user_elements['bdate'].split('.')[2])
-                                       - int(partner_elements['bdate'].split('.')[2]))
+        user_bdate = int(user_elements['bdate'].split('.')[2])
+        partner_bdate = int(partner_elements['bdate'].split('.')[2])
+        calc = abs(user_bdate - partner_bdate) + 0.1
+        # print(f"calc: {type(calc)}"
+        #       f" - {calc}")
+        raw_data_weight['bdate'] = (int(standart_matrix['age_difference'])-abs(user_bdate - partner_bdate)
+                                    + 0.1)*standart_matrix['age_difference']
     except IndexError:
-        raw_data_weight['bdate'] = 100
+        raw_data_weight['bdate'] = 0
     except AttributeError:
         return None
     #данные по общим друзьям
@@ -177,7 +188,7 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
         if type(partner_elements[key]) is list and type(user_elements[key]) is list:
             for partner_interest in partner_elements[key]:
                 if partner_interest in user_elements[key]:
-                    raw_data_weight[key] += 1
+                    raw_data_weight[key] += standart_matrix[key]
                 if key == 'books':
                     print(f'{partner_interest} - {user_elements[key]}')
     #Сравнение простых параметров (город, место рождения, религия и т.д.
@@ -185,7 +196,7 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
         raw_data_weight[key] = 0
         if user_elements[key] and key != 'common_count':
             if user_elements.get(key) == partner_elements.get(key) and user_elements.get(key):
-                raw_data_weight[key] = 1
+                raw_data_weight[key] = standart_matrix[key]
     print(raw_data_weight)
     return raw_data_weight
 

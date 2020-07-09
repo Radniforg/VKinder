@@ -32,16 +32,25 @@ def profile_pictures(user_id, token):
                 break
         raw.append(temp_dictionary)
     raw.sort(reverse = True, key = lambda x: (x['like'], x['date']))
-    return raw[:3]
+    profile = []
+    if len(raw) >= 3:
+        for i in range(3):
+            profile.append(raw[i]['url'])
+    elif len(raw) == 0:
+        return None
+    else:
+        for i in range(len(raw)):
+            profile.append(raw[i]['url'])
+    return profile
 
 
 def user_search(search_queue, token, giant_id_list):
     age_queue = search_queue['bdate'] - search_queue['age_limit']
     while age_queue <= (search_queue['bdate'] + search_queue['age_limit']) or (2020 - age_queue) < 18:
         if search_queue['relation'] == 0:
-            relation_list = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+            relation_list = [1, 2, 3, 4, 5, 6, 7, 8]
         else:
-            relation_list = [0, 1, 5, 6]
+            relation_list = [1, 5, 6]
         for relation in relation_list:
             print(f'{age_queue} - {relation}')
             response_id = requests.get(
@@ -70,19 +79,16 @@ def user_search(search_queue, token, giant_id_list):
         age_queue += 1
     return giant_id_list
 
-def partner_photo(potential_partner_list, token, ban_list):
+def partner_photo(potential_partner_list, token):
     count = 1
     result = []
-    new_ban_list = []
     for partner_id in potential_partner_list:
         if count <= 10:
             temp_dict = {}
-            if partner_id[0] not in ban_list:
-                temp_dict['id'] = partner_id[0]
-                temp_dict['photo'] = profile_pictures(partner_id[0], token)
-                new_ban_list.append(partner_id[0])
-                count += 1
-                print(count)
+            temp_dict['id'] = partner_id[0]
+            temp_dict['photo'] = profile_pictures(partner_id[0], token)
+            count += 1
+            print(count)
             if temp_dict['photo'] is not None:
                 result.append(temp_dict)
     return result
