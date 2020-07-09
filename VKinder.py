@@ -6,20 +6,35 @@ import data_procession as dp
 import vkinder_sql as vs
 import psycopg2 as pg
 import json
+import os.path
 
 
 if __name__ == '__main__':
     previous_token = ''
     APP_ID = 7527992
-    current_token = token_confirmation(APP_ID, previous_token)
-    user = user_confirmed('', current_token)
+    correct_input = False
+    while not correct_input:
+        ready = input('Хотите использовать заготовленные данные (Д/Н)?\n')
+        if ready.lower() == 'н':
+            correct_input = True
+            current_token = token_confirmation(APP_ID, previous_token)
+            user = user_confirmed('', current_token)
+            standart = ud.user_element_weight()
+        elif ready.lower() == 'д':
+            correct_input = True
+            with open('requirements.json') as f:
+                temp = json.load(f)
+                current_token = temp['token']
+                user = temp['user']
+                standart = ud.user_element_weight(1)
+        else:
+            print('Некорректный ввод')
     user_information = ud.user_interests(user, current_token)
-    standart = ud.user_element_weight()
     search_queue = {'city': user_information['city'],
                     'bdate': int(user_information['bdate'].split('.')[2]),
                     'sex': standart['sex_preference'],
                     'relation': standart['relation_ban'],
-                    'age_limit': standart['age_limit']}
+                    'age_limit': int(standart['age_limit'])}
     giant_id_list = []
     giant_id_list = dp.user_search(search_queue, current_token, giant_id_list)
     potential_partner_list = {}
