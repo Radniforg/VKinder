@@ -1,10 +1,10 @@
 import requests
 from urllib.parse import urlencode
+import time
 
 
-def token_confirmation(app_id, TOKEN=''):
+def token_confirmation(app_id, token=''):
     # Проверка работоспособности токена
-    token = TOKEN
     check_bool = False
     while not check_bool:
         token_check = requests.get(
@@ -35,7 +35,7 @@ def token_confirmation(app_id, TOKEN=''):
     return token
 
 
-def user_confirmed(user1, TOKEN):
+def user_confirmed(user1, token):
     # Получение id пользователя
     username_confirmation = False
     if user1 == '':
@@ -44,11 +44,12 @@ def user_confirmed(user1, TOKEN):
         response_id = requests.get(
             'https://api.vk.com/method/users.get',
             params={
-                'access_token': TOKEN,
+                'access_token': token,
                 'user_ids': user1,
                 'v': 5.103
             }
         )
+        time.sleep(1)
         try:
             user_id = response_id.json()['response'][0]['id']
             username_confirmation = True
@@ -59,7 +60,7 @@ def user_confirmed(user1, TOKEN):
                 function_suspension = input('Некорректное имя пользователя. '
                                             'Хотите продолжить (Y/N):\n')
                 if function_suspension.lower() == 'n':
-                    print('Программа остановлена пользователем. ' \
+                    print('Программа остановлена пользователем. '
                           'Некорректное имя пользователя')
                     errorcode = 'ErrorThatCouldNotBeId'
                     return errorcode
@@ -76,8 +77,8 @@ def user_confirmed(user1, TOKEN):
                 function_suspension = input('Некорректное имя пользователя. '
                                             'Хотите продолжить (Y/N):\n')
                 if function_suspension.lower() == 'n':
-                    print('Программа остановлена пользователем. ' \
-                           'Некорректное имя пользователя')
+                    print('Программа остановлена пользователем. '
+                          'Некорректное имя пользователя')
                     errorcode = 'ErrorThatCouldNotBeId'
                     return errorcode
                 elif function_suspension.lower() == 'y':

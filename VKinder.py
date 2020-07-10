@@ -9,7 +9,7 @@ import json
 import sys
 
 if __name__ == '__main__':
-    previous_token = ''
+    previous_token = '0b08dd3bdbfb860b42262056dca42760770704df6a7dc7f8858a7531a30f67a05f250436d870e6c7a3b39'
     APP_ID = 7527992
     correct_input = False
     while not correct_input:

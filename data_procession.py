@@ -89,13 +89,21 @@ def user_search(search_queue, token, giant_id_list):
 def partner_photo(potential_partner_list, token):
     count = 1
     result = []
+    if len(potential_partner_list) == 0:
+        return None
+    if len(potential_partner_list) >= 10:
+        count_limit = 10
+    else:
+        count_limit = len(potential_partner_list)
     for partner_id in potential_partner_list:
-        if count <= 10:
-            temp_dict = {}
-            temp_dict['id'] = partner_id[0]
-            temp_dict['photo'] = profile_pictures(partner_id[0], token)
-            temp_dict['url'] = f'https://vk.com/id{partner_id[0]}'
+        if count <= count_limit:
+            temp_dict = {'id': partner_id[0],
+                         'photo': profile_pictures(partner_id[0], token),
+                         'url': f'https://vk.com/id{partner_id[0]}'}
             if temp_dict['photo'] is not None:
                 count += 1
                 result.append(temp_dict)
     return result
+
+if __name__ == '__main__':
+    pass

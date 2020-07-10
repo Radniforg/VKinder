@@ -209,6 +209,4 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
 
 
 if __name__ == '__main__':
-    with open('requirements.json') as ready:
-        user_matrix = json.load(ready)
-        print(user_matrix)
+    pass
