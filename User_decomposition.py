@@ -67,7 +67,7 @@ def user_interests(user_id, token):
     return elements
 
 
-def user_element_weight(ready_matrix = 0):
+def user_element_weight(ready_matrix=0):
     if ready_matrix == 0:
         standart_matrix = {
             'age_difference': 2,
@@ -139,7 +139,8 @@ def user_element_weight(ready_matrix = 0):
                 correct_input = True
             elif user_response.lower() == 'д':
                 for key in standart_matrix.keys():
-                    if key == 'relation_ban' or key == 'sex_preference' or key == 'age_limit':
+                    if key == 'relation_ban' or key == 'sex_preference'\
+                            or key == 'age_limit':
                         user_matrix[key] = standart_matrix[key]
                     else:
                         inter_correct_input = False

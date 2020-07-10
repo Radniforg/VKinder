@@ -1,6 +1,4 @@
 import unittest
-from unittest.mock import patch
-import VKinder as vk
 import VK_TOKEN as vt
 import User_decomposition as ud
 import data_procession as dp
@@ -10,21 +8,19 @@ APP_ID = 7527992
 current_token = ''
 current_token = vt.token_confirmation(APP_ID, current_token)
 
-class Vkinder_Test(unittest.TestCase):
-    pass
 
 class ud_Test(unittest.TestCase):
     def SetUp(self):
         pass
 
-    def test_user_interests(self, user_id = '4243253', token = current_token):
+    def test_user_interests(self, user_id='4243253', token=current_token):
         elements_test = ud.user_interests(user_id, token)
         self.assertIs(type(elements_test), dict)
 
-    def test_negative_user_ui(self, user_id = 'hgj897hjk', token = current_token):
+    def test_negative_user_ui(self, user_id='hgj897hjk', token=current_token):
         self.assertRaises(KeyError, lambda: ud.user_interests(user_id, token))
 
-    def test_negative_token_ui(self, user_id = '4243253', token = ''):
+    def test_negative_token_ui(self, user_id='4243253', token=''):
         self.assertRaises(KeyError, lambda: ud.user_interests(user_id, token))
 
     def test_user_comparison(self):
@@ -61,5 +57,5 @@ class dp_Test(unittest.TestCase):
         self.assertIs(type(result), list)
 
     def test_negative_partner_photo_list(self):
-        self.assertIsNone(IndexError, lambda: dp.partner_photo([], current_token))
-
+        self.assertIsNone(IndexError, lambda: dp.partner_photo([],
+                                                               current_token))
