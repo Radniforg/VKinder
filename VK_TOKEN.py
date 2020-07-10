@@ -38,6 +38,8 @@ def token_confirmation(app_id, TOKEN=''):
 def user_confirmed(user1, TOKEN):
     # Получение id пользователя
     username_confirmation = False
+    if user1 == '':
+        user1 = input('Пожалуйста, введите id пользователя: \n')
     while not username_confirmation:
         response_id = requests.get(
             'https://api.vk.com/method/users.get',
@@ -57,8 +59,10 @@ def user_confirmed(user1, TOKEN):
                 function_suspension = input('Некорректное имя пользователя. '
                                             'Хотите продолжить (Y/N):\n')
                 if function_suspension.lower() == 'n':
-                    return 'Программа остановлена пользователем. ' \
-                           'Некорректное имя пользователя'
+                    print('Программа остановлена пользователем. ' \
+                          'Некорректное имя пользователя')
+                    errorcode = 'ErrorThatCouldNotBeId'
+                    return errorcode
                 elif function_suspension.lower() == 'y':
                     user1 = input('Пожалуйста, введите имя пользователя'
                                   ' или его id:\n')
@@ -72,8 +76,10 @@ def user_confirmed(user1, TOKEN):
                 function_suspension = input('Некорректное имя пользователя. '
                                             'Хотите продолжить (Y/N):\n')
                 if function_suspension.lower() == 'n':
-                    return 'Программа остановлена пользователем. ' \
-                           'Некорректное имя пользователя'
+                    print('Программа остановлена пользователем. ' \
+                           'Некорректное имя пользователя')
+                    errorcode = 'ErrorThatCouldNotBeId'
+                    return errorcode
                 elif function_suspension.lower() == 'y':
                     user1 = input('Пожалуйста, введите имя пользователя'
                                   ' или его id:\n')

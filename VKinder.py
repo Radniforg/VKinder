@@ -6,8 +6,7 @@ import data_procession as dp
 import vkinder_sql as vs
 import psycopg2 as pg
 import json
-import os.path
-
+import sys
 
 if __name__ == '__main__':
     previous_token = ''
@@ -19,17 +18,29 @@ if __name__ == '__main__':
             correct_input = True
             current_token = token_confirmation(APP_ID, previous_token)
             user = user_confirmed('', current_token)
+            if user == 'ErrorThatCouldNotBeId':
+                sys.exit()
             standart = ud.user_element_weight()
         elif ready.lower() == 'д':
-            correct_input = True
-            with open('requirements.json') as f:
-                temp = json.load(f)
-                current_token = temp['token']
-                user = temp['user']
-                standart = ud.user_element_weight(1)
+            try:
+                with open('requirements.json') as f:
+                    temp = json.load(f)
+                    previous_token = temp['token']
+                    current_token = token_confirmation(APP_ID, previous_token)
+                    user_unchecked = temp['user']
+                    user = user_confirmed(user_unchecked, current_token)
+                    standart = ud.user_element_weight(1)
+                    correct_input = True
+            except FileNotFoundError:
+                print('Файл requirements.json отсутствует в папке')
         else:
             print('Некорректный ввод')
     user_information = ud.user_interests(user, current_token)
+    try:
+        year = int(user_information['bdate'].split('.')[2])
+    except IndexError:
+        year = input('Пожалуйста, укажите ваш год рождения: \n')
+        user_information['bdate'] = f'..{year}'
     search_queue = {'city': user_information['city'],
                     'bdate': int(user_information['bdate'].split('.')[2]),
                     'sex': standart['sex_preference'],

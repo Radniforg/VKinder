@@ -139,16 +139,16 @@ def user_element_weight(ready_matrix = 0):
                 correct_input = True
             elif user_response.lower() == 'д':
                 for key in standart_matrix.keys():
-                    if key == 'relation_ban' or key == 'sex_preference':
+                    if key == 'relation_ban' or key == 'sex_preference' or key == 'age_limit':
                         user_matrix[key] = standart_matrix[key]
                     else:
                         inter_correct_input = False
                         while not inter_correct_input:
                             user_input = input(f'Пожалуйста, введите значимость '
-                                               f'параметра {key} по шкале'
+                                               f'параметра {key} по шкале '
                                                f'от 0 до 9 (целое число):\n')
                             if re.match('^\d$', user_input):
-                                user_matrix[key] = user_input
+                                user_matrix[key] = int(user_input)
                                 inter_correct_input = True
                             else:
                                 print('Ошибка, некорректный ввод!')
