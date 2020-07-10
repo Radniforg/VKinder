@@ -7,7 +7,7 @@ import data_procession as dp
 import test_data
 
 APP_ID = 7527992
-current_token = '0b08dd3bdbfb860b42262056dca42760770704df6a7dc7f8858a7531a30f67a05f250436d870e6c7a3b39'
+current_token = ''
 current_token = vt.token_confirmation(APP_ID, current_token)
 
 class Vkinder_Test(unittest.TestCase):
