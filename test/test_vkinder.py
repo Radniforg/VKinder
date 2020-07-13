@@ -3,11 +3,20 @@ import VK_TOKEN as vt
 import User_decomposition as ud
 import data_procession as dp
 import test_data
+import settings as se
 
-APP_ID = 7527992
-current_token = ''
+APP_ID = se.app_id
+current_token = se.token
 current_token = vt.token_confirmation(APP_ID, current_token)
+vt.token_settings_save('../settings.py', current_token)
 
+
+class vk_token_test(unittest.TestCase):
+    def SetUp(self):
+        pass
+
+    def test_negative_settings_change(self, pathfile = '../setting.py', token = current_token):
+        self.assertRaises(FileNotFoundError, lambda: vt.token_settings_save(pathfile, token))
 
 class ud_Test(unittest.TestCase):
     def SetUp(self):
@@ -57,5 +66,5 @@ class dp_Test(unittest.TestCase):
         self.assertIs(type(result), list)
 
     def test_negative_partner_photo_list(self):
-        self.assertIsNone(IndexError, lambda: dp.partner_photo([],
-                                                               current_token))
+        self.assertIsNone(dp.partner_photo([], current_token))
+

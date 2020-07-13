@@ -88,3 +88,20 @@ def user_confirmed(user1, token):
                 else:
                     print('Некорректная команда. Повторите ввод')
     return user_id
+
+
+def token_settings_save(filepath, token):
+    with open(filepath, 'r') as settings:
+        file_lines = settings.readlines()
+        for line in file_lines:
+            if 'token' in line:
+                index = file_lines.index(line)
+                line = line.rstrip()
+                token_swap = line.split('"')
+                new_line = token_swap[0] + '"' + token + '"\n'
+                line = line.replace(line, new_line)
+                file_lines[index] = line
+    with open(filepath, 'w') as settings:
+        for line in file_lines:
+            settings.write(line)
+    return None

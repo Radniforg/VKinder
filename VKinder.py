@@ -5,12 +5,13 @@ from pprint import pprint
 import data_procession as dp
 import vkinder_sql as vs
 import psycopg2 as pg
+import settings as se
 import json
 import sys
 
 if __name__ == '__main__':
-    previous_token = ''
-    APP_ID = 7527992
+    previous_token = se.token
+    APP_ID = se.app_id
     correct_input = False
     while not correct_input:
         ready = input('Хотите использовать заготовленные данные (Д/Н)?\n')
