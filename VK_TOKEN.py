@@ -77,10 +77,7 @@ def user_confirmed(user1, token):
                 function_suspension = input('Некорректное имя пользователя. '
                                             'Хотите продолжить (Y/N):\n')
                 if function_suspension.lower() == 'n':
-                    print('Программа остановлена пользователем. '
-                          'Некорректное имя пользователя')
-                    errorcode = 'ErrorThatCouldNotBeId'
-                    return errorcode
+                    return None
                 elif function_suspension.lower() == 'y':
                     user1 = input('Пожалуйста, введите имя пользователя'
                                   ' или его id:\n')

@@ -1,22 +1,8 @@
 import requests
 import re
 import time
-import json
-
-search_list_keys = ['activities', 'books', 'city', 'faculty_name', 'games',
-                    'home_town', 'interests', 'movies',
-                    'music', 'occupation', 'religion', 'tv']
-small_list_keys = ['books', 'interests', 'movies', 'music', 'tv', 'games']
-basic_list_keys = ['activities', 'city', 'faculty_name', 'home_town',
-                   'religion', 'occupation', 'life_main',
-                   'political', 'people_main']
-basic_interest_keys = ['bdate', 'faculty_name', 'relation', 'sex',
-                       'activities', 'home_town', 'religion',
-                       'common_count']
-personal_interest_keys = ['political', 'people_main', 'life_main',
-                          'smoking', 'alcohol']
-# special_interest_keys = ['city', 'occupation', 'religion', 'personal']
-
+import settings as se
+import keyholder as ke
 
 def user_interests(user_id, token):
     elements = {}
@@ -34,9 +20,9 @@ def user_interests(user_id, token):
     )
     time.sleep(1)
     combined_data = response_id.json()['response'][0]
-    for key in basic_interest_keys:
+    for key in ke.basic_interest_keys:
         elements[key] = combined_data.get(key)
-    for key in small_list_keys:
+    for key in ke.small_list_keys:
         if combined_data.get(key):
             elements[key] = combined_data.get(key).replace('\t', ', ').split(', ')
             for i in range(len(elements[key])):
@@ -47,7 +33,7 @@ def user_interests(user_id, token):
     if type(temp_element) is dict:
         elements['religion'] = [combined_data.get('religion'),
                                 temp_element.get('religion')]
-        for key in personal_interest_keys:
+        for key in ke.personal_interest_keys:
             elements[key] = temp_element.get(key)
     else:
         elements['religion'] = [combined_data.get('religion'), ]
@@ -67,98 +53,74 @@ def user_interests(user_id, token):
     return elements
 
 
-def user_element_weight(ready_matrix=0):
-    if ready_matrix == 0:
-        standart_matrix = {
-            'age_difference': 2,
-            'sex_preference': 0,
-            'activities': 1,
-            'books': 9,
-            'city': 0,
-            'common_count': 2,
-            'faculty_name': 1,
-            'games': 9,
-            'home_town': 2,
-            'interests': 9,
-            'life_main': 6,
-            'movies': 0,
-            'music': 0,
-            'occupation': 1,
-            'people_main': 8,
-            'political': 2,
-            'relation_ban': 0,
-            'religion': 3,
-            'tv': 8,
-            'alcohol': 0,
-            'smoking': 0
-        }
-        user_matrix = {}
-        correct_input = False
-        while not correct_input:
-            user_input = input('Введите допустимую для вас разницу'
-                               ' в возрасте:\n')
-            try:
-                standart_matrix['age_limit'] = int(user_input)
-                correct_input = True
-            except ValueError:
-                print('Некорректный ввод')
-        correct_input = False
-        while not correct_input:
-            user_love_interest = input('Если вы ищете любовный интерес '
-                                       '- нажмите Д. Если вы ищете '
-                                       'собеседника - нажмите Н\n')
-            if user_love_interest.lower() == 'н':
-                correct_input = True
-            elif user_love_interest.lower() == 'д':
-                standart_matrix['relation_ban'] = 1
-                while not correct_input:
-                    user_preferences = input('Пожалуйста, укажите '
-                                             'желаемый пол партера: '
-                                             'М/Ж/Л(любой):\n')
-                    if user_preferences.lower() == 'м':
-                        standart_matrix['sex_preference'] = 2
-                        correct_input = True
-                    elif user_preferences.lower() == 'ж':
-                        standart_matrix['sex_preference'] = 1
-                        correct_input = True
-                    elif user_preferences.lower() == 'л':
-                        correct_input = True
-                    else:
-                        print('Некорректный ввод')
-            else:
-                print('Некорректный ввод')
-        correct_input = False
-        while not correct_input:
-            user_response = input('Если хотите самостоятельно настроить '
-                                  'важность параметров партнера, '
-                                  'нажмите Д. Для продолжения со '
-                                  'стандартными параметрами нажмите Н\n')
-            if user_response.lower() == 'н':
-                for key in standart_matrix.keys():
+def user_element_weight():
+    standart_matrix = se.standart_matrix
+    user_matrix = {}
+    correct_input = False
+    while not correct_input:
+        user_input = input('Введите допустимую для вас разницу'
+                           ' в возрасте:\n')
+        try:
+            standart_matrix['age_limit'] = int(user_input)
+            correct_input = True
+        except ValueError:
+            print('Некорректный ввод')
+    correct_input = False
+    while not correct_input:
+        user_love_interest = input('Если вы ищете любовный интерес '
+                                   '- нажмите Д. Если вы ищете '
+                                   'собеседника - нажмите Н\n')
+        if user_love_interest.lower() == 'н':
+            correct_input = True
+        elif user_love_interest.lower() == 'д':
+            standart_matrix['relation_ban'] = 1
+            while not correct_input:
+                user_preferences = input('Пожалуйста, укажите '
+                                         'желаемый пол партера: '
+                                         'М/Ж/Л(любой):\n')
+                if user_preferences.lower() == 'м':
+                    standart_matrix['sex_preference'] = 2
+                    correct_input = True
+                elif user_preferences.lower() == 'ж':
+                    standart_matrix['sex_preference'] = 1
+                    correct_input = True
+                elif user_preferences.lower() == 'л':
+                    correct_input = True
+                else:
+                    print('Некорректный ввод')
+        else:
+            print('Некорректный ввод')
+    correct_input = False
+    while not correct_input:
+        user_response = input('Если хотите самостоятельно настроить '
+                              'важность параметров партнера, '
+                              'нажмите Д. Для продолжения со '
+                              'стандартными параметрами нажмите Н\n')
+        if user_response.lower() == 'н':
+            for key in standart_matrix.keys():
+                user_matrix[key] = standart_matrix[key]
+            correct_input = True
+        elif user_response.lower() == 'д':
+            for key in standart_matrix.keys():
+                if key == 'relation_ban' or key == 'sex_preference' \
+                        or key == 'age_limit':
                     user_matrix[key] = standart_matrix[key]
-                correct_input = True
-            elif user_response.lower() == 'д':
-                for key in standart_matrix.keys():
-                    if key == 'relation_ban' or key == 'sex_preference'\
-                            or key == 'age_limit':
-                        user_matrix[key] = standart_matrix[key]
-                    else:
-                        inter_correct_input = False
-                        while not inter_correct_input:
-                            user_input = input(f'Пожалуйста, введите значимость '
-                                               f'параметра {key} по шкале '
-                                               f'от 0 до 9 (целое число):\n')
-                            if re.match('^\d$', user_input):
-                                user_matrix[key] = int(user_input)
-                                inter_correct_input = True
-                            else:
-                                print('Ошибка, некорректный ввод!')
-                correct_input = True
-            else:
-                print('Некорректная команда. Повторите ввод')
-    else:
-        with open('requirements.json') as ready:
-            user_matrix = json.load(ready)['standart_matrix']
+                else:
+                    inter_correct_input = False
+                    while not inter_correct_input:
+                        user_input = input(f'Пожалуйста, введите значимость '
+                                           f'параметра {key}'
+                                           f' ({se.translator[key]})'
+                                           f' по шкале от 0 до 9 '
+                                           f'(целое число):\n')
+                        if re.match('^\d$', user_input):
+                            user_matrix[key] = int(user_input)
+                            inter_correct_input = True
+                        else:
+                            print('Ошибка, некорректный ввод!')
+            correct_input = True
+        else:
+            print('Некорректная команда. Повторите ввод')
     return user_matrix
 
 
@@ -192,7 +154,7 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
     raw_data_weight['common_count'] = partner_elements['common_count'] / \
                                       (10 - standart_matrix['common_count'])
     # данные, сравнивающие интересы, книги и тд
-    for key in small_list_keys:
+    for key in ke.small_list_keys:
         raw_data_weight[key] = 0
         if type(partner_elements[key]) is list \
                 and type(user_elements[key]) is list:
@@ -200,7 +162,7 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
                 if partner_interest in user_elements[key]:
                     raw_data_weight[key] += standart_matrix[key]
     # Сравнение простых параметров (город, место рождения, религия и т.д.
-    for key in basic_list_keys:
+    for key in ke.basic_list_keys:
         raw_data_weight[key] = 0
         if user_elements[key] and key != 'common_count':
             if user_elements.get(key) == partner_elements.get(key)\

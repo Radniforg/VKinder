@@ -4,10 +4,10 @@ import time
 search_list_keys = ['activities', 'books', 'city', 'faculty_name', 'games',
                     'home_town', 'interests', 'movies', 'music', 'occupation',
                     'religion', 'religion_2', 'tv']
-relation_id = {'1': 'не женат/не замужем', '2': 'есть друг/подруга',
-               '3': 'помолвлен(а)', '4': 'женат/замужем', '5': 'всё сложно',
-               '6': 'в активном поиске', '7': 'влюблен(а)',
-               '8': 'в гражданском браке'}
+relation_id = {1: 'не женат/не замужем', 2: 'есть друг/подруга',
+               3: 'помолвлен(а)', 4: 'женат/замужем', 5: 'всё сложно',
+               6: 'в активном поиске', 7: 'влюблен(а)',
+               8: 'в гражданском браке'}
 
 
 def profile_pictures(user_id, token):
@@ -51,16 +51,17 @@ def profile_pictures(user_id, token):
 
 
 def user_search(search_queue, token, giant_id_list):
+    current_time = time.ctime().split(' ')
     age_queue = search_queue['bdate'] - search_queue['age_limit']
     while age_queue <= (search_queue['bdate'] + search_queue['age_limit'])\
-            or (2020 - age_queue) < 18:
+            or (int(current_time[len(current_time)-1]) - age_queue) < 18:
         if search_queue['relation'] == 0:
             relation_list = [1, 2, 3, 4, 5, 6, 7, 8]
         else:
             relation_list = [1, 5, 6]
         for relation in relation_list:
             print(f'Год рождения: {age_queue}; '
-                  f'Статус - {relation_id[str(relation)]}')
+                  f'Статус - {relation_id[relation]}') #при попытке убрать "str" падает KeyError.
             response_id = requests.get(
                 'https://api.vk.com/method/users.search',
                 params={
