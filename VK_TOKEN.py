@@ -99,5 +99,5 @@ def user_confirmed(user1, token, filepath='settings.py'):
                     correct_input = True
                 else:
                     print('Некорректная команда. Повторите ввод')
-    settings_save(filepath, 'user', str(user_id))
+    settings_save(filepath, 'user_id', str(user_id))
     return user_id

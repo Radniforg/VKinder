@@ -5,11 +5,11 @@ import settings as se
 import keyholder as ke
 import VK_TOKEN as vt
 import sys
+from pprint import pprint
 
 def user_profile(token, username):
     previous_token = token
-    APP_ID = se.app_id
-    current_token = vt.token_confirmation(APP_ID, previous_token)
+    current_token = vt.token_confirmation(se.app_id, previous_token)
     user = vt.user_confirmed(username, current_token)
     if not user:
         sys.exit()
@@ -137,8 +137,7 @@ def user_element_weight():
             print('Некорректная команда. Повторите ввод')
     return user_matrix
 
-
-def user_comparison(user_elements, partner_elements, standart_matrix):
+def bad_habits(user_elements, partner_elements, standart_matrix):
     # Проверяет совместимость по отношению к курению
     if user_elements['smoking'] not in [0, 3, 4, None] \
             and standart_matrix['smoking'] > 0:
@@ -151,22 +150,27 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
         if abs(user_elements['alcohol'] - partner_elements['alcohol']) > 2 \
                 and partner_elements['alcohol'] != 4:
             return None
-    # Сырые данные соотношения с текущим партнером
-    raw_data_weight = {}
-    # Данные соотношения возрастов
+    return 1
+
+def ages(user_elements, partner_elements, standart_matrix):
     try:
         user_bdate = int(user_elements['bdate'].split('.')[2])
         partner_bdate = int(partner_elements['bdate'].split('.')[2])
-        raw_data_weight['bdate'] = (int(standart_matrix['age_limit']) -
+        age_weight = (int(standart_matrix['age_limit']) -
                                     abs(user_bdate - partner_bdate) + 0.1)\
                                    * standart_matrix['age_difference']
+        return age_weight
     except IndexError:
-        raw_data_weight['bdate'] = 0
+        return 0
     except AttributeError:
+        return 0
+
+def user_comparison(user_elements, partner_elements, standart_matrix):
+    if not bad_habits(user_elements, partner_elements, standart_matrix):
         return None
-    # данные по общим друзьям
-    raw_data_weight['common_count'] = partner_elements['common_count'] / \
-                                      (10 - standart_matrix['common_count'])
+    raw_data_weight = {'bdate': ages(user_elements, partner_elements, standart_matrix),
+                       'common_count': partner_elements['common_count'] / \
+                                      (10 - standart_matrix['common_count'])}
     # данные, сравнивающие интересы, книги и тд
     for key in ke.small_list_keys:
         raw_data_weight[key] = 0
@@ -188,7 +192,7 @@ def birthday(user_information):
     try:
         year = int(user_information['bdate'].split('.')[2])
         return user_information['bdate']
-    except IndexError:
+    except (IndexError, AttributeError):
         correct_input = False
         while not correct_input:
             year = input('Пожалуйста, укажите ваш год рождения: \n')
@@ -198,7 +202,6 @@ def birthday(user_information):
                 return bdate
             except ValueError:
                 print('Некорректный ввод!')
-
 
 
 
