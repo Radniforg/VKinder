@@ -3,9 +3,8 @@ import re
 import time
 import settings as se
 import keyholder as ke
-import VK_TOKEN as vt
+import vk_token as vt
 import sys
-from pprint import pprint
 
 def user_profile(token, username):
     previous_token = token

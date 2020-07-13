@@ -1,5 +1,5 @@
 import unittest
-import VK_TOKEN as vt
+import vk_token as vt
 import user_decomposition as ud
 import data_procession as dp
 import test_data

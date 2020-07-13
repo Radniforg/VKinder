@@ -1,7 +1,7 @@
 import requests
 from urllib.parse import urlencode
 import time
-
+import os
 
 def settings_save(filepath, set_name, set_value):
     with open(filepath, 'r') as settings:
@@ -17,7 +17,18 @@ def settings_save(filepath, set_name, set_value):
     with open(filepath, 'w') as settings:
         for line in file_lines:
             settings.write(line)
+            settings.flush()
+            os.fsync(settings)
     return None
+
+
+def value_get(filepath, value_name):
+    with open(filepath, 'r') as settings:
+        file_lines = settings.readlines()
+        for line in file_lines:
+            if value_name in line:
+                get_value = line.split('"')
+                return get_value[1]
 
 
 def token_confirmation(app_id, token='', filepath='settings.py'):
