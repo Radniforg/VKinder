@@ -20,7 +20,7 @@ def settings_save(filepath, set_name, set_value):
     return None
 
 
-def token_confirmation(app_id, token=''):
+def token_confirmation(app_id, token='', filepath='settings.py'):
     # Проверка работоспособности токена
     check_bool = False
     while not check_bool:
@@ -49,11 +49,11 @@ def token_confirmation(app_id, token=''):
             print(f'Token - {token}')
         except KeyError:
             check_bool = True
-    settings_save('settings.py', 'token', token)
+    settings_save(filepath, 'token', token)
     return token
 
 
-def user_confirmed(user1, token):
+def user_confirmed(user1, token, filepath='settings.py'):
     # Получение id пользователя
     username_confirmation = False
     if user1 == '':
@@ -99,5 +99,5 @@ def user_confirmed(user1, token):
                     correct_input = True
                 else:
                     print('Некорректная команда. Повторите ввод')
-    settings_save('settings.py', 'user', str(user_id))
+    settings_save(filepath, 'user', str(user_id))
     return user_id

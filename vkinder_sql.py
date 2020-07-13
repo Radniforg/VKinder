@@ -1,5 +1,10 @@
 import psycopg2 as pg
 
+def new_ban(partner_list):
+    new_ban_list = ''
+    for person in partner_list[:10]:
+        new_ban_list = new_ban_list + ', ' + str(person[0])
+    return new_ban_list
 
 def partner_add_block(conn, id_user, block_string):
     cur = conn.cursor()

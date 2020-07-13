@@ -3,6 +3,20 @@ import re
 import time
 import settings as se
 import keyholder as ke
+import VK_TOKEN as vt
+import sys
+
+def user_profile(token, username):
+    previous_token = token
+    APP_ID = se.app_id
+    current_token = vt.token_confirmation(APP_ID, previous_token)
+    user = vt.user_confirmed(username, current_token)
+    if not user:
+        sys.exit()
+    user_info = user_interests(user, current_token)
+    user_info['bdate'] = birthday(user_info)
+    return user_info
+
 
 def user_interests(user_id, token):
     elements = {}
