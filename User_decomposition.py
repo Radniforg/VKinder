@@ -170,6 +170,23 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
                 raw_data_weight[key] = standart_matrix[key]
     return raw_data_weight
 
+def birthday(user_information):
+    try:
+        year = int(user_information['bdate'].split('.')[2])
+        return user_information['bdate']
+    except IndexError:
+        correct_input = False
+        while not correct_input:
+            year = input('Пожалуйста, укажите ваш год рождения: \n')
+            bdate = f'..{year}'
+            try:
+                user_information['bdate'] = int(bdate.split('.')[2])
+                return bdate
+            except ValueError:
+                print('Некорректный ввод!')
+
+
+
 
 if __name__ == '__main__':
     pass

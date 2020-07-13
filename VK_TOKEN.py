@@ -3,6 +3,23 @@ from urllib.parse import urlencode
 import time
 
 
+def settings_save(filepath, set_name, set_value):
+    with open(filepath, 'r') as settings:
+        file_lines = settings.readlines()
+        for line in file_lines:
+            if set_name in line:
+                index = file_lines.index(line)
+                line = line.rstrip()
+                setting_swap = line.split('"')
+                new_line = setting_swap[0] + '"' + set_value + '"\n'
+                line = line.replace(line, new_line)
+                file_lines[index] = line
+    with open(filepath, 'w') as settings:
+        for line in file_lines:
+            settings.write(line)
+    return None
+
+
 def token_confirmation(app_id, token=''):
     # Проверка работоспособности токена
     check_bool = False
@@ -32,6 +49,7 @@ def token_confirmation(app_id, token=''):
             print(f'Token - {token}')
         except KeyError:
             check_bool = True
+    settings_save('settings.py', 'token', token)
     return token
 
 
@@ -60,10 +78,7 @@ def user_confirmed(user1, token):
                 function_suspension = input('Некорректное имя пользователя. '
                                             'Хотите продолжить (Y/N):\n')
                 if function_suspension.lower() == 'n':
-                    print('Программа остановлена пользователем. '
-                          'Некорректное имя пользователя')
-                    errorcode = 'ErrorThatCouldNotBeId'
-                    return errorcode
+                    return None
                 elif function_suspension.lower() == 'y':
                     user1 = input('Пожалуйста, введите имя пользователя'
                                   ' или его id:\n')
@@ -84,21 +99,5 @@ def user_confirmed(user1, token):
                     correct_input = True
                 else:
                     print('Некорректная команда. Повторите ввод')
+    settings_save('settings.py', 'user', str(user_id))
     return user_id
-
-
-def token_settings_save(filepath, token):
-    with open(filepath, 'r') as settings:
-        file_lines = settings.readlines()
-        for line in file_lines:
-            if 'token' in line:
-                index = file_lines.index(line)
-                line = line.rstrip()
-                token_swap = line.split('"')
-                new_line = token_swap[0] + '"' + token + '"\n'
-                line = line.replace(line, new_line)
-                file_lines[index] = line
-    with open(filepath, 'w') as settings:
-        for line in file_lines:
-            settings.write(line)
-    return None

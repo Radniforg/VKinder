@@ -8,15 +8,15 @@ import settings as se
 APP_ID = se.app_id
 current_token = se.token
 current_token = vt.token_confirmation(APP_ID, current_token)
-vt.token_settings_save('../settings.py', current_token)
+vt.settings_save('../settings.py', 'token', current_token)
 
 
 class vk_token_test(unittest.TestCase):
     def SetUp(self):
         pass
 
-    def test_negative_settings_change(self, pathfile = '../setting.py', token = current_token):
-        self.assertRaises(FileNotFoundError, lambda: vt.token_settings_save(pathfile, token))
+    def test_negative_settings_change(self, pathfile = '../setting.py', set_name = 'token', set_value = current_token):
+        self.assertRaises(FileNotFoundError, lambda: vt.settings_save(pathfile, set_name, set_value))
 
 class ud_Test(unittest.TestCase):
     def SetUp(self):
