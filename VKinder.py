@@ -16,8 +16,8 @@ if __name__ == '__main__':
                     'relation': standart['relation_ban'],
                     'age_limit': int(standart['age_limit'])}
     giant_id_list = dp.user_search(search_queue, se.token, [])
-    with pg.connect(database='vkinder', user='vinder',
-                    password='vinder') as conn:
+    with pg.connect(database=se.sql['database'], user=se.sql['username'],
+                    password=se.sql['password']) as conn:
         ban_list = vs.block_check(conn, se.user).split(', ')
         sorted_partner_list = dp.partner_list(ban_list, user_information,
                                            giant_id_list, standart, se.token)
