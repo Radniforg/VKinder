@@ -15,8 +15,13 @@ class vk_token_test(unittest.TestCase):
     def SetUp(self):
         pass
 
-    def test_negative_settings_change(self, pathfile = '../setting.py', set_name = 'token', set_value = current_token):
-        self.assertRaises(FileNotFoundError, lambda: vt.settings_save(pathfile, set_name, set_value))
+    def test_negative_settings_change(self, pathfile='../setting.py',
+                                      set_name='token',
+                                      set_value=current_token):
+        self.assertRaises(FileNotFoundError,
+                          lambda: vt.settings_save(pathfile, set_name,
+                                                   set_value))
+
 
 class ud_Test(unittest.TestCase):
     def SetUp(self):
@@ -60,11 +65,11 @@ class dp_Test(unittest.TestCase):
     def test_partner_list(self):
         friend_list = []
         for friend in test_data.friends:
-            friend_tuple = (vt.user_confirmed(friend, current_token, '../settings.py'), 0)
+            friend_tuple = (vt.user_confirmed(friend, current_token,
+                                              '../settings.py'), 0)
             friend_list.append(friend_tuple)
         result = dp.partner_photo(friend_list, current_token)
         self.assertIs(type(result), list)
 
     def test_negative_partner_photo_list(self):
         self.assertIsNone(dp.partner_photo([], current_token))
-

@@ -6,7 +6,8 @@ import vk_token as vt
 
 def profile_pictures(user_id, token):
     ke.profile['owner_id'] = user_id
-    response_id = vt.request('https://api.vk.com/method/photos.get', vt.parameters(token, ke.profile))
+    response_id = vt.request('https://api.vk.com/method/photos.get',
+                             vt.parameters(token, ke.profile))
     print(f'Обрабатывается профиль пользователя id{user_id}')
     try:
         photo_data = response_id['response']['items']
@@ -56,7 +57,8 @@ def user_search(search_queue, token, giant_id_list):
                 'has_photo': 1,
                 'v': 5.99
             }
-            response_id = vt.request('https://api.vk.com/method/users.search', vt.parameters(token, params))
+            response_id = vt.request('https://api.vk.com/method/users.search',
+                                     vt.parameters(token, params))
             search_data = response_id['response']['items']
             for user in search_data:
                 try:
@@ -74,7 +76,8 @@ def partner_list(ban, user_info, id_list, standarts, token):
         progress += 1
         if str(partner_id) not in ban:
             raw_weight = ud.user_comparison(user_info,
-                                            ud.user_interests(partner_id, token),
+                                            ud.user_interests(partner_id,
+                                                              token),
                                             standarts)
             final_weight = 0
             if raw_weight:
@@ -86,7 +89,7 @@ def partner_list(ban, user_info, id_list, standarts, token):
             print(f'{progress} потенциальных партнеров'
                   f' из {len(id_list)} обработано')
     list_sorted = sorted(potential_partner_list.items(),
-                                 key=lambda x: x[1], reverse=True)
+                         key=lambda x: x[1], reverse=True)
     return list_sorted
 
 
@@ -108,6 +111,3 @@ def partner_photo(potential_partner_list, token):
                 count += 1
                 result.append(temp_dict)
     return result
-
-if __name__ == '__main__':
-    pass

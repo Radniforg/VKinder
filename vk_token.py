@@ -3,6 +3,7 @@ from urllib.parse import urlencode
 import time
 import os
 
+
 def settings_save(filepath, set_name, set_value):
     with open(filepath, 'r') as settings:
         file_lines = settings.readlines()
@@ -21,7 +22,8 @@ def settings_save(filepath, set_name, set_value):
             os.fsync(settings)
     return None
 
-def parameters(token, add_params: dict=None):
+
+def parameters(token, add_params: dict = None):
     params = {
         'access_token': token
     }
@@ -30,20 +32,11 @@ def parameters(token, add_params: dict=None):
             params[key] = value
     return params
 
+
 def request(url, params):
     response = requests.get(url, params)
     time.sleep(1)
     return response.json()
-
-
-
-# def value_get(filepath, value_name):
-#     with open(filepath, 'r') as settings:
-#         file_lines = settings.readlines()
-#         for line in file_lines:
-#             if value_name in line:
-#                 get_value = line.split('"')
-#                 return get_value[1]
 
 
 def token_confirmation(app_id, token='', filepath='settings.py'):
@@ -81,7 +74,8 @@ def user_confirmed(user1, token, filepath='settings.py'):
         user1 = input('Пожалуйста, введите id пользователя: \n')
     while not username_confirmation:
         response_id = request('https://api.vk.com/method/users.get',
-                              parameters(token, {'user_ids': user1, 'v': 5.103}))
+                              parameters(token, {'user_ids': user1,
+                                                 'v': 5.103}))
         try:
             user_id = response_id['response'][0]['id']
             username_confirmation = True

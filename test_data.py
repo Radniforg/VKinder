@@ -1,9 +1,6 @@
 friends = ['grofindar', 4243253, 'spy_zefirka', 23289398, 'gavrilovanton7777',
            'vasilek1819', 'dragonrick', 'assana', 'fokinavl', 'koprov89',
            'koshechkin_roman']
-
-
-
 matrix = {"age_limit": "5", "age_difference": 2, "sex_preference": 1,
           "activities": 1, "books": 9, "city": 0,
           "common_count": 2, "faculty_name": 1, "games": 9,

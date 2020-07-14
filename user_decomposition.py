@@ -3,6 +3,7 @@ import settings as se
 import keyholder as ke
 import vk_token as vt
 
+
 def user_lesser_profile(token, username):
     user_info = user_interests(username, token)
     user_info['bdate'] = birthday(user_info)
@@ -118,6 +119,7 @@ def user_element_weight():
             print('Некорректная команда. Повторите ввод')
     return user_matrix
 
+
 def bad_habits(user_elements, partner_elements, standart_matrix):
     # Проверяет совместимость по отношению к курению
     if user_elements['smoking'] not in [0, 3, 4, None] \
@@ -133,6 +135,7 @@ def bad_habits(user_elements, partner_elements, standart_matrix):
             return None
     return 1
 
+
 def ages(user_elements, partner_elements, standart_matrix):
     try:
         user_bdate = int(user_elements['bdate'].split('.')[2])
@@ -146,10 +149,12 @@ def ages(user_elements, partner_elements, standart_matrix):
     except AttributeError:
         return 0
 
+
 def user_comparison(user_elements, partner_elements, standart_matrix):
     if not bad_habits(user_elements, partner_elements, standart_matrix):
         return None
-    raw_data_weight = {'bdate': ages(user_elements, partner_elements, standart_matrix),
+    raw_data_weight = {'bdate': ages(user_elements, partner_elements,
+                                     standart_matrix),
                        'common_count': partner_elements['common_count'] / \
                                       (10 - standart_matrix['common_count'])}
     # данные, сравнивающие интересы, книги и тд
@@ -169,6 +174,7 @@ def user_comparison(user_elements, partner_elements, standart_matrix):
                 raw_data_weight[key] = standart_matrix[key]
     return raw_data_weight
 
+
 def birthday(user_information):
     try:
         year = int(user_information['bdate'].split('.')[2])
@@ -183,8 +189,3 @@ def birthday(user_information):
                 return bdate
             except ValueError:
                 print('Некорректный ввод!')
-
-
-
-if __name__ == '__main__':
-    pass

@@ -26,8 +26,10 @@ if __name__ == '__main__':
                     password=se.sql['password']) as conn:
         ban_list = vs.block_check(conn, current_user).split(', ')
         sorted_partner_list = dp.partner_list(ban_list, user_information,
-                                           giant_id_list, standart, current_token)
-        vs.partner_add_block(conn, current_user, vs.new_ban(sorted_partner_list))
+                                              giant_id_list, standart,
+                                              current_token)
+        vs.partner_add_block(conn, current_user,
+                             vs.new_ban(sorted_partner_list))
         results = dp.partner_photo(sorted_partner_list, current_token)
         pprint(results)
         vs.sql_result(conn, se.user_id, json.dumps(results))
