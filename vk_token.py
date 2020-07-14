@@ -21,6 +21,21 @@ def settings_save(filepath, set_name, set_value):
             os.fsync(settings)
     return None
 
+def parameters(token, add_params: dict=None):
+    params = {
+        'access_token': token
+    }
+    if add_params and type(add_params) is dict:
+        for key, value in add_params.items():
+            params[key] = value
+    return params
+
+def request(url, params):
+    response = requests.get(url, params)
+    time.sleep(1)
+    return response.json()
+
+
 
 def value_get(filepath, value_name):
     with open(filepath, 'r') as settings:
