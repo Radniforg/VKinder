@@ -14,4 +14,13 @@ relation_id = {1: 'не женат/не замужем', 2: 'есть друг/�
                3: 'помолвлен(а)', 4: 'женат/замужем', 5: 'всё сложно',
                6: 'в активном поиске', 7: 'влюблен(а)',
                8: 'в гражданском браке'}
+interests = {'fields': 'sex, bdate, city, home_town, education, occupation, '
+                       'relation, connections, activities, interests, music, '
+                       'movies, tv, books, games, is_friend, religion, '
+                       'personal, common_count',
+             'v': 5.103}
+profile = {'album_id': 'profile',
+           'extended': 1,
+           'count': 150,
+           'v': 5.99}
 # special_interest_keys = ['city', 'occupation', 'religion', 'personal']

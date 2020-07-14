@@ -1,25 +1,15 @@
-import requests
 import time
-from keyholder import relation_id
+import keyholder as ke
 import user_decomposition as ud
+import vk_token as vt
 
 
 def profile_pictures(user_id, token):
-    response_id = requests.get(
-        'https://api.vk.com/method/photos.get',
-        params={
-            'access_token': token,
-            'owner_id': user_id,
-            'album_id': 'profile',
-            'extended': 1,
-            'count': 150,
-            'v': 5.99
-        }
-    )
+    ke.profile['owner_id'] = user_id
+    response_id = vt.request('https://api.vk.com/method/photos.get', vt.parameters(token, ke.profile))
     print(f'Обрабатывается профиль пользователя id{user_id}')
-    time.sleep(1)
     try:
-        photo_data = response_id.json()['response']['items']
+        photo_data = response_id['response']['items']
     except KeyError:
         return None
     raw = []
@@ -55,23 +45,19 @@ def user_search(search_queue, token, giant_id_list):
             relation_list = [1, 5, 6]
         for relation in relation_list:
             print(f'Год рождения: {age_queue}; '
-                  f'Статус - {relation_id[relation]}')
-            response_id = requests.get(
-                'https://api.vk.com/method/users.search',
-                params={
-                    'access_token': token,
-                    'q': '',
-                    'count': 1000,
-                    'city': search_queue['city'],
-                    'sex': search_queue['sex'],
-                    'status': relation,
-                    'birth_year': age_queue,
-                    'has_photo': 1,
-                    'v': 5.99
-                }
-            )
-            search_data = response_id.json()['response']['items']
-            time.sleep(1)
+                  f'Статус - {ke.relation_id[relation]}')
+            params = {
+                'q': '',
+                'count': 1000,
+                'city': search_queue['city'],
+                'sex': search_queue['sex'],
+                'status': relation,
+                'birth_year': age_queue,
+                'has_photo': 1,
+                'v': 5.99
+            }
+            response_id = vt.request('https://api.vk.com/method/users.search', vt.parameters(token, params))
+            search_data = response_id['response']['items']
             for user in search_data:
                 try:
                     giant_id_list.index(user['id'])

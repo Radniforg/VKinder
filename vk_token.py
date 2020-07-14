@@ -37,28 +37,23 @@ def request(url, params):
 
 
 
-def value_get(filepath, value_name):
-    with open(filepath, 'r') as settings:
-        file_lines = settings.readlines()
-        for line in file_lines:
-            if value_name in line:
-                get_value = line.split('"')
-                return get_value[1]
+# def value_get(filepath, value_name):
+#     with open(filepath, 'r') as settings:
+#         file_lines = settings.readlines()
+#         for line in file_lines:
+#             if value_name in line:
+#                 get_value = line.split('"')
+#                 return get_value[1]
 
 
 def token_confirmation(app_id, token='', filepath='settings.py'):
     # Проверка работоспособности токена
     check_bool = False
     while not check_bool:
-        token_check = requests.get(
-            'https://api.vk.com/method/users.get',
-            params={
-                'access_token': token,
-                'v': 5.103
-            }
-        )
+        token_check = request('https://api.vk.com/method/users.get',
+                              parameters(token, {'v': 5.103}))
         try:
-            token = token_check.json()['error']
+            token = token_check['error']
             OAUTH_URL = 'https://oauth.vk.com/authorize'
             OAUTH_PARAMS = {
                 'client_id': app_id,
@@ -85,20 +80,13 @@ def user_confirmed(user1, token, filepath='settings.py'):
     if user1 == '':
         user1 = input('Пожалуйста, введите id пользователя: \n')
     while not username_confirmation:
-        response_id = requests.get(
-            'https://api.vk.com/method/users.get',
-            params={
-                'access_token': token,
-                'user_ids': user1,
-                'v': 5.103
-            }
-        )
-        time.sleep(1)
+        response_id = request('https://api.vk.com/method/users.get',
+                              parameters(token, {'user_ids': user1, 'v': 5.103}))
         try:
-            user_id = response_id.json()['response'][0]['id']
+            user_id = response_id['response'][0]['id']
             username_confirmation = True
         except KeyError:
-            print(response_id.json())
+            print(response_id)
             correct_input = False
             while not correct_input:
                 function_suspension = input('Некорректное имя пользователя. '
@@ -112,7 +100,7 @@ def user_confirmed(user1, token, filepath='settings.py'):
                 else:
                     print('Некорректная команда. Повторите ввод')
         except IndexError:
-            print(response_id.json())
+            print(response_id)
             correct_input = False
             while not correct_input:
                 function_suspension = input('Некорректное имя пользователя. '

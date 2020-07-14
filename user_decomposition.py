@@ -1,38 +1,20 @@
-import requests
 import re
-import time
 import settings as se
 import keyholder as ke
 import vk_token as vt
-import sys
 
-def user_profile(token, username):
-    previous_token = token
-    current_token = vt.token_confirmation(se.app_id, previous_token)
-    user = vt.user_confirmed(username, current_token)
-    if not user:
-        sys.exit()
-    user_info = user_interests(user, current_token)
+def user_lesser_profile(token, username):
+    user_info = user_interests(username, token)
     user_info['bdate'] = birthday(user_info)
     return user_info
 
 
 def user_interests(user_id, token):
     elements = {}
-    response_id = requests.get(
-        'https://api.vk.com/method/users.get',
-        params={
-            'access_token': token,
-            'user_ids': user_id,
-            'fields': 'sex, bdate, city, home_town, education, occupation,'
-                      ' relation, connections, activities, interests, music,'
-                      ' movies, tv, books, games, is_friend, religion,'
-                      ' personal, common_count',
-            'v': 5.103
-        }
-    )
-    time.sleep(1)
-    combined_data = response_id.json()['response'][0]
+    ke.interests['user_ids'] = user_id
+    response_id = vt.request('https://api.vk.com/method/users.get',
+                             vt.parameters(token, ke.interests))
+    combined_data = response_id['response'][0]
     for key in ke.basic_interest_keys:
         elements[key] = combined_data.get(key)
     for key in ke.small_list_keys:
